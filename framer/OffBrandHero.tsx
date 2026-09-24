@@ -1,14 +1,15 @@
+// Generated from kit/components/OffBrandHero.tsx by scripts/assemble.mjs. Edit the kit source, not this file.
 import * as React from "react"
 import { addPropertyControls, ControlType, RenderTarget } from "framer"
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion"
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Shared helpers (kept inline so this file pastes into Framer on its own)
+// Shared helpers (inlined so this file pastes into Framer on its own)
 // ─────────────────────────────────────────────────────────────────────────────
 
 const INK = "#1d1d1d"
 const PARCHMENT = "#e5e4e0"
-const ASH = "#bfbebe"
+const HAIRLINE = "rgba(229, 228, 224, 0.18)"
 const FONT_STACK =
     '"Ataero Retina OB Edition", "Ataero Retina OB", Manrope, "Instrument Sans", Inter, ui-sans-serif, system-ui, sans-serif'
 
@@ -47,6 +48,137 @@ function useSize(ref: React.RefObject<HTMLElement>, initial = { w: 1440, h: 900 
     }, [ref])
     return size
 }
+
+/** Section label: 13px @1440, tracked, uppercase. */
+function labelCss(font: FramerFont | undefined, size: number, color: string): React.CSSProperties {
+    return {
+        ...fontCss(font, 500),
+        fontSize: size,
+        letterSpacing: "0.05em",
+        textTransform: "uppercase",
+        color,
+        lineHeight: 1,
+        margin: 0,
+    }
+}
+
+/** Splits a multiline string into paragraphs on blank lines. */
+function paragraphs(text: string): string[] {
+    return text
+        .split(/\n\s*\n/)
+        .map((s) => s.trim())
+        .filter(Boolean)
+}
+
+function ArrowNE() {
+    return (
+        <svg width="0.62em" height="0.62em" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+            <path d="M2 8l6-6M3.2 2H8v4.8" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+    )
+}
+
+function ArrowE() {
+    return (
+        <svg width="0.8em" height="0.8em" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+            <path d="M1 6h10M7 2l4 4-4 4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+    )
+}
+
+type PillProps = {
+    label: string
+    href?: string
+    size: number
+    color: string
+    hoverText: string
+    border: string
+    font?: FramerFont
+    newTab?: boolean
+    onClick?: () => void
+    className?: string
+}
+
+/** Ghost pill: the system's one state-change button. Fills with the text colour on hover. */
+function Pill({ label, href, size, color, hoverText, border, font, newTab, onClick, className }: PillProps) {
+    const Tag: any = href ? "a" : "button"
+    return (
+        <>
+            <Tag
+                href={href}
+                onClick={onClick}
+                target={href && newTab ? "_blank" : undefined}
+                rel={href && newTab ? "noreferrer" : undefined}
+                className={`ob-pill ${className ?? ""}`}
+                style={{
+                    ...labelCss(font, size, color),
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "0.9em",
+                    padding: `${Math.round(size * 1.45)}px ${Math.round(size * 2.6)}px`,
+                    border: `1px solid ${border}`,
+                    borderRadius: 999,
+                    background: "transparent",
+                    textDecoration: "none",
+                    whiteSpace: "nowrap",
+                    cursor: "pointer",
+                }}
+            >
+                {label}
+                <ArrowE />
+            </Tag>
+            <style>{`.ob-pill { transition: background-color .25s ease, color .25s ease } .ob-pill:hover { background: ${color} !important; color: ${hoverText} !important }`}</style>
+        </>
+    )
+}
+
+/** Ghost text link with a trailing arrow and a fade on hover. */
+function TextLink({
+    label,
+    href,
+    size,
+    color,
+    font,
+    arrow = "e",
+    newTab,
+}: {
+    label: string
+    href?: string
+    size: number
+    color: string
+    font?: FramerFont
+    arrow?: "e" | "ne"
+    newTab?: boolean
+}) {
+    return (
+        <>
+            <a
+                href={href || undefined}
+                target={newTab ? "_blank" : undefined}
+                rel={newTab ? "noreferrer" : undefined}
+                className="ob-textlink"
+                style={{
+                    ...labelCss(font, size, color),
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "0.45em",
+                    textDecoration: "none",
+                    padding: "5px 0",
+                    borderRadius: 10,
+                }}
+            >
+                {label}
+                {arrow === "ne" ? <ArrowNE /> : <ArrowE />}
+            </a>
+            <style>{`.ob-textlink { transition: opacity .25s ease } .ob-textlink:hover { opacity: .6 }`}</style>
+        </>
+    )
+}
+
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Sphere scene (inlined so this file pastes into Framer on its own)
+// ─────────────────────────────────────────────────────────────────────────────
 
 function useViewportHeight() {
     const [h, setH] = React.useState(900)
@@ -111,6 +243,9 @@ type SceneProps = {
     shiftX: number
     shiftY: number
     growOver: number
+    fadeOut: boolean
+    fadeAfter: number
+    fadeOver: number
     animate: boolean
 }
 
@@ -136,6 +271,9 @@ function SphereScene(p: SceneProps) {
     const scale = useTransform(scrollY, [0, dist], [1, p.growOnScroll ? p.growTo : 1])
     const x = useTransform(scrollY, [0, dist], ["0%", p.growOnScroll ? `${p.shiftX}%` : "0%"])
     const y = useTransform(scrollY, [0, dist], ["0%", p.growOnScroll ? `${p.shiftY}%` : "0%"])
+    const fadeStart = vh * Math.max(0, p.fadeAfter)
+    const fadeEnd = fadeStart + vh * Math.max(0.1, p.fadeOver)
+    const opacity = useTransform(scrollY, [fadeStart, fadeEnd], [1, p.fadeOut ? 0 : 1])
     const ringBorder = `1px ${p.ringStyle} ${p.ringColor}`
     const spinning = p.animate && p.spin > 0
     const orbiting = p.animate && p.orbitSeconds > 0
@@ -153,7 +291,7 @@ function SphereScene(p: SceneProps) {
                 pointerEvents: "none",
             }}
         >
-            <motion.div style={{ position: "relative", width: "100%", height: "100%", scale, x, y }}>
+            <motion.div style={{ position: "relative", width: "100%", height: "100%", scale, x, y, opacity }}>
                 {p.rings && <div style={ringStyleFor(p.ringInner, ringBorder)} />}
                 {p.rings && <div style={ringStyleFor(p.ringOuter, ringBorder)} />}
                 {p.orbitDot && (
@@ -324,6 +462,32 @@ const SPHERE_CONTROLS = {
         defaultValue: 1,
         hidden: (p: { growOnScroll?: boolean }) => !p.growOnScroll,
     },
+    fadeOut: {
+        type: ControlType.Boolean,
+        title: "Fade out",
+        description: "Fades the sphere away further down the page so later sections sit on clean Ink.",
+        defaultValue: true,
+    },
+    fadeAfter: {
+        type: ControlType.Number,
+        title: "Fade after",
+        min: 0,
+        max: 8,
+        step: 0.25,
+        unit: "vh",
+        defaultValue: 2,
+        hidden: (p: { fadeOut?: boolean }) => !p.fadeOut,
+    },
+    fadeOver: {
+        type: ControlType.Number,
+        title: "Fade over",
+        min: 0.25,
+        max: 4,
+        step: 0.25,
+        unit: "vh",
+        defaultValue: 1,
+        hidden: (p: { fadeOut?: boolean }) => !p.fadeOut,
+    },
 }
 
 type SphereControlProps = {
@@ -348,6 +512,9 @@ type SphereControlProps = {
     shiftX: number
     shiftY: number
     growOver: number
+    fadeOut: boolean
+    fadeAfter: number
+    fadeOver: number
 }
 
 const SPHERE_DEFAULTS: SphereControlProps = {
@@ -372,6 +539,9 @@ const SPHERE_DEFAULTS: SphereControlProps = {
     shiftX: -14,
     shiftY: -4,
     growOver: 1,
+    fadeOut: true,
+    fadeAfter: 2,
+    fadeOver: 1,
 }
 
 function sceneFrom(p: SphereControlProps, diameter: string, animate: boolean): SceneProps {
@@ -397,6 +567,9 @@ function sceneFrom(p: SphereControlProps, diameter: string, animate: boolean): S
         shiftX: p.shiftX,
         shiftY: p.shiftY,
         growOver: p.growOver,
+        fadeOut: p.fadeOut,
+        fadeAfter: p.fadeAfter,
+        fadeOver: p.fadeOver,
         animate,
     }
 }

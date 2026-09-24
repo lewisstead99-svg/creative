@@ -34,7 +34,7 @@ const reactGlobals = {
   },
 }
 
-async function bundle(external) {
+async function bundle(external, routeMode) {
   const result = await build({
     entryPoints: [resolve(here, "main.tsx")],
     bundle: true,
@@ -43,7 +43,7 @@ async function bundle(external) {
     target: "es2020",
     jsx: "automatic",
     write: false,
-    define: { "process.env.NODE_ENV": '"production"' },
+    define: { "process.env.NODE_ENV": '"production"', __ROUTE_MODE__: JSON.stringify(routeMode) },
     alias: { framer: resolve(here, "framer-stub.ts") },
     plugins: external ? [reactGlobals] : [],
     logLevel: "warning",
@@ -58,5 +58,13 @@ async function page(templateName, js, outName) {
   console.log(`preview/dist/${outName} written (${(html.length / 1024).toFixed(0)} KB)`)
 }
 
-await page("index.template.html", await bundle(false), "index.html")
-await page("artifact.template.html", await bundle(true), "artifact.html")
+// Deployed site: one HTML per route so /work, /manifesto and /contact resolve
+// as plain static paths (Vercel serves <dir>/index.html).
+const siteJs = await bundle(false, "path")
+await page("index.template.html", siteJs, "index.html")
+for (const route of ["work", "manifesto", "contact"]) {
+  await mkdir(resolve(out, route), { recursive: true })
+  await page("index.template.html", siteJs, `${route}/index.html`)
+}
+// Artifact viewer: React from cdnjs, hash routing (only plain #anchors reach the page).
+await page("artifact.template.html", await bundle(true, "hash"), "artifact.html")
