@@ -8,7 +8,9 @@
     "typecheck": "tsc -p preview/tsconfig.json",
     "shots": "node preview/shots.mjs",
     "check": "npm run assemble && npm run typecheck && npm run build && npm run shots",
-    "assemble": "node scripts/assemble.mjs"
+    "assemble": "node scripts/assemble.mjs",
+    "fabricatr": "node fabricatr/scripts/build.mjs",
+    "fabricatr:shots": "node fabricatr/scripts/shots.mjs"
   },
   "devDependencies": {
     "@types/react": "^18.3.12",

@@ -3,3 +3,4 @@ preview/dist/
 preview/shots/
 *.log
 .DS_Store
+preview/fabricatr-shots/
