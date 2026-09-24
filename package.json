@@ -1,0 +1,22 @@
+{
+  "name": "offbrand-framer-kit",
+  "private": true,
+  "version": "1.0.0",
+  "description": "OFF+BRAND-style hero + featured work as Framer code components, with a local preview harness",
+  "scripts": {
+    "build": "node preview/build.mjs",
+    "typecheck": "tsc -p preview/tsconfig.json",
+    "shots": "node preview/shots.mjs",
+    "check": "npm run typecheck && npm run build && npm run shots"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "esbuild": "^0.28.2",
+    "framer-motion": "^11.18.2",
+    "playwright-core": "^1.58.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "typescript": "^5.6.3"
+  }
+}
