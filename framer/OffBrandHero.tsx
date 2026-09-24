@@ -656,6 +656,7 @@ export default function OffBrandHero(props: Partial<HeroProps>) {
                 width: "100%",
                 height: "100%",
                 ...props.style,
+                minHeight: 480,
                 position: "relative",
                 overflow: "hidden",
                 background: p.background,

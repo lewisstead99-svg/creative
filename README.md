@@ -49,7 +49,11 @@ Framer has no upload for an HTML site or a repo. Code goes in through its Code p
 2. The code editor opens with a starter component. Select all, delete, paste the whole of `framer/OffBrandKit.tsx`, and wait for the status at the bottom to show it compiled.
 3. Close the editor. All 13 components are now listed under **Assets → Code** and under **Insert → Code**.
 
-**One file per component.** If Framer rejects the big file, paste the individual files from `framer/` instead: one new code file per component, named exactly as the file (`OffBrandHero`, `OffBrandNav`, …). Each is self-contained.
+**One file per component.** If Framer rejects the big file, paste the individual files from `framer/` instead: one new code file per component. Each is self-contained, and the file name in Framer can be anything.
+
+**If Framer says "Failed to save file … No save id found"**, the code file was not registered before the paste, which is a Framer editor glitch rather than a problem with the code. Reload the browser tab, reopen the file and, if the contents are gone, paste again. If it still fails on the big file after a reload, use the per-component files.
+
+**The preview panel next to the editor** shows a component with no page height, so it is a poor guide for the hero: put the component on a page with height set to Viewport and use Preview.
 
 Either way, add `framer/overrides/Blend.tsx` as a new code file of type **Override** only if you want difference blend on native layers you draw yourself.
 
