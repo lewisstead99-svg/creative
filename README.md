@@ -34,19 +34,36 @@ All in `framer/`. Every file is self-contained; paste one and it works.
 | `PageHeader` | Inner-page opener: eyebrow, display title with optional count, intro. |
 | `ContactDetails` | Hairline grid of ways to reach you. Pair with Framer's native Form block. |
 | `IridescentSphere` | The sphere alone, for any other page. |
+| `OffBrandKit` | All of the above in one file, for a single paste. |
 | `overrides/Blend.tsx` | `withDifference` / `withExclusion` / `withIsolation` overrides for native layers. |
 
 Every component shares the same controls for font, text, muted text, hairline, background, side padding and space above/below, so the rhythm stays consistent across pages.
 
-## Install in Framer
+## Getting it into Framer
 
-1. **Assets → Code → Create code file.** Name it exactly as the component (`OffBrandHero`, `OffBrandNav`, …), paste the matching file from `framer/`, save. Repeat for each component you need. Add `Blend` as an **Override** file if you want blend on native layers.
-2. **Page background** → Ink `#1d1d1d` on every page.
-3. **Home page**, as a vertical stack: OffBrandNav (Position: Fixed, width fill, height auto) → OffBrandHero (height 100vh / Fit viewport) → FeaturedWork → IntroBlock → LogoGrid → Services → Statement → Testimonials → CTA → Footer. Everything below the hero is height auto.
-4. **Work page**: OffBrandNav → PageHeader → FeaturedWork with *Label column* off, *Stagger* off, and all your cards → CTA → Footer.
-5. **Manifesto page**: OffBrandNav → PageHeader → three Statement blocks (label them 01, 02, 03; turn *Rings* off on two of them) → IntroBlock → CTA → Footer.
-6. **Contact page**: OffBrandNav → PageHeader → ContactDetails → a native Framer Form block if you want a form → Footer.
-7. Wire links: every button, card, nav item and footer link has a Link control that accepts Framer pages.
+Framer has no upload for an HTML site or a repo. Code goes in through its Code panel by pasting, and there are two ways to do that.
+
+**One paste (recommended).** `framer/OffBrandKit.tsx` holds every component as a named export.
+
+1. Open your Framer project. In the left sidebar switch to **Assets**, find **Code**, click **+** and choose **New file**. Name it `OffBrandKit`.
+2. The code editor opens with a starter component. Select all, delete, paste the whole of `framer/OffBrandKit.tsx`, and wait for the status at the bottom to show it compiled.
+3. Close the editor. All 13 components are now listed under **Assets → Code** and under **Insert → Code**.
+
+**One file per component.** If Framer rejects the big file, paste the individual files from `framer/` instead: one new code file per component, named exactly as the file (`OffBrandHero`, `OffBrandNav`, …). Each is self-contained.
+
+Either way, add `framer/overrides/Blend.tsx` as a new code file of type **Override** only if you want difference blend on native layers you draw yourself.
+
+## Building the pages
+
+1. **Page background** → Ink `#1d1d1d` on every page (select the page, Fill in the right panel).
+2. **Home page.** Insert the components in this order, each with width **Fill**: OffBrandNav → OffBrandHero → FeaturedWork → IntroBlock → LogoGrid → Services → Statement → Testimonials → CTA → Footer. Then:
+   - OffBrandNav: Position **Fixed**, pinned to the top, height auto.
+   - OffBrandHero: height **Viewport** (100vh).
+   - Everything else: height **Auto**. If a component shows a fixed height, switch it to Auto.
+3. **Work page**: OffBrandNav → PageHeader → FeaturedWork with *Label column* off, *Stagger* off, and all your cards → CTA → Footer.
+4. **Manifesto page**: OffBrandNav → PageHeader → three Statement blocks (label them 01, 02, 03; turn *Rings* off on two of them) → IntroBlock → CTA → Footer.
+5. **Contact page**: OffBrandNav → PageHeader → ContactDetails → a native Framer Form block if you want a form → Footer.
+6. Select a component and use the right-hand panel to set copy, images, colours and links. Every button, card, nav item, menu item and footer link has a Link control that accepts Framer pages.
 
 The canvas shows the hero sphere pinned inside the hero. Press **Preview** to see the sphere carry over into the featured cards and fade out further down.
 
@@ -77,6 +94,6 @@ npm install
 npm run check   # assemble kit → framer/, typecheck, build preview/dist, screenshot every route
 ```
 
-- `kit/components/*.tsx` are the sources. `kit/shared/` holds the helpers and the sphere. `scripts/assemble.mjs` inlines them into `framer/*.tsx`, which is what you paste into Framer. Edit the kit, not `framer/`.
+- `kit/components/*.tsx` are the sources. `kit/shared/` holds the helpers and the sphere. `scripts/assemble.mjs` inlines them into `framer/*.tsx` and into the single `framer/OffBrandKit.tsx`, which is what you paste into Framer. Edit the kit, not `framer/`.
 - `preview/dist/index.html` is a self-contained page (React and the font inlined); `preview/dist/artifact.html` is the same site for the claude.ai artifact viewer.
 - `preview/shots/` holds the screenshots; `preview/compare.mjs` samples sphere colours against the reference when the gradient needs tuning.
