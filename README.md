@@ -1,3 +1,12 @@
+# creative
+
+Two projects live here.
+
+- **`fabricatr/`** — the Fabricatr studio website: a dependency-free static site with a generative material system and a canvas-driven opening. See [`fabricatr/README.md`](fabricatr/README.md). `npm run fabricatr` regenerates its pages, `npm run fabricatr:shots` screenshots every route.
+- **Everything else** — the OFF+BRAND Framer kit, described below.
+
+---
+
 # OFF+BRAND Framer site kit
 
 A full agency website in the style of [itsoffbrand.com](https://www.itsoffbrand.com), built as **Framer code components**: paste the files into Framer, drop the sections on pages, and set copy, images and links in the property panel. The same components are also bundled into a static site (`preview/dist`) that deploys to Vercel as-is, so you can see the whole thing live before touching Framer.
